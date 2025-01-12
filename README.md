@@ -1,4 +1,4 @@
-# Token Lottery DApp
+# DApp
 
 This repository contains a Solidity smart contract (`TokenLottery.sol`) for a decentralized lottery DApp. Users can participate in the lottery by submitting tokens. The contract features:
 
