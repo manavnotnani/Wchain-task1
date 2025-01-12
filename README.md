@@ -1,111 +1,87 @@
-Token-Based Lottery System
-A secure and transparent decentralized lottery implementation that leverages ERC20 tokens for participation. The system features automated winner selection, participant verification, and timed rounds.
-System Architecture
-The lottery system consists of three main components:
-Core Lottery Engine
-A robust smart contract system handling participant management, token processing, and winner selection.
-Key Features:
+# Token-Based Lottery DApp
 
-Participant authentication via whitelist
-Single-entry enforcement per round
-Time-controlled lottery phases
-Cryptographically secure winner selection
-Automated prize distribution
+A secure and decentralized lottery system implemented in Solidity that enables token-based participation with built-in security controls and automated winner selection.
 
-Token Integration
-Built on standard ERC20 infrastructure:
+## Core Features
 
-Main Lottery Contract (LotteryEngine.sol)
-Token Interface (IERC20.sol)
-Test Token Implementation (Token.sol)
+- Whitelisted participation system
+- One-entry-per-user limit
+- Time-bounded lottery rounds
+- Automated winner selection
+- Secure reward distribution
+- ERC20 token integration
 
-Security Framework
+## Smart Contracts
 
-Participant validation
-Rate limiting mechanisms
-Temporal controls
-Safe token handling
+### Main Contracts
+- `TokenLottery.sol`: Core lottery implementation
+- `IERC20.sol`: ERC20 token interface
+- `Token.sol`: Sample token implementation
 
-Development Setup
-Environment Requirements
-Set up your development environment with:
-bashCopy# Core dependencies
-npm init
+## Setup Instructions
+
+### Prerequisites
+
+```bash
+# Install required dependencies
 npm install --save-dev hardhat
-
-# Contract dependencies
 npm install @openzeppelin/contracts
-Build and Deploy
+```
 
-Compile the contracts:
+### Installation
 
-bashCopynpx hardhat compile
+```bash
+git clone <repository_url>
+cd <repository_directory>
+npm install
+```
 
-Deploy to your chosen network:
+### Deployment Steps
 
-bashCopynpx hardhat run deployment/lottery.js --network <your-network>
-Example deployment script:
-javascriptCopyasync function deployLottery() {
-  const LotterySystem = await ethers.getContractFactory("LotteryEngine");
-  const lottery = await LotterySystem.deploy(
-    tokenAddress,
-    roundDuration
-  );
-  
-  await lottery.deployed();
-  console.log(`Lottery deployed at: ${lottery.address}`);
-}
-Contract Interface
-Administrative Functions
-solidityCopyfunction addToWhitelist(address participant)
-function removeParticipant(address participant)
-function configureLotteryDuration(uint256 duration)
-Participant Functions
-solidityCopyfunction joinLottery(uint256 tokenAmount)
-function checkEntryStatus()
-function viewCurrentPrizePool()
-System Functions
-solidityCopyfunction concludeRound()
-function retrieveWinner()
-function checkRoundStatus()
-Event System
-The contract emits the following events:
+1. Compile contracts:
+```bash
+npx hardhat compile
+```
 
-ParticipantJoined(address participant, uint256 amount)
-RoundCompleted(address winner, uint256 prize)
-ConfigurationUpdated(uint256 newDuration)
+2. Deploy to network:
+```bash
+npx hardhat run scripts/deploy.js --network <network_name>
+```
 
-Safety Measures
+## Contract Interface
 
-Access Control
+### Administrative Functions
+- `whitelist(address _user)`: Add participants to whitelist
+- `removeFromWhitelist(address _user)`: Remove participants from whitelist
 
-Role-based permissions
-Whitelist validation
-Time-locked operations
+### User Functions
+- `enterLottery(uint256 _amount)`: Enter lottery with tokens
+- `getWinner()`: Retrieve current winner
 
+### System Functions
+- `endLottery()`: Conclude current lottery round
 
-Token Safety
+## Events
+- `Entered(address indexed user, uint256 amount)`
+- `WinnerSelected(address indexed winner, uint256 reward)`
 
-OpenZeppelin secure transfer implementations
-Balance verification
-Overflow protection
+## Security Features
 
+- OpenZeppelin secure token handling
+- Role-based access control
+- Rate limiting mechanisms
+- Anti-reentrancy protection
+- Time-locked operations
 
-Operational Security
+## Development Commands
 
-Rate limiting
-State validation
-Reentry protection
-
-
-
-Testing
-Execute the test suite:
-bashCopy# Standard tests
+```bash
+npx hardhat help
 npx hardhat test
-
-# With coverage
-npx hardhat coverage
-
-# With gas reporting
 REPORT_GAS=true npx hardhat test
+npx hardhat node
+```
+
+## Security Notice
+
+This contract requires proper security audit before production deployment. Use at your own risk.
