@@ -1,120 +1,111 @@
-# DApp
+Token-Based Lottery System
+A secure and transparent decentralized lottery implementation that leverages ERC20 tokens for participation. The system features automated winner selection, participant verification, and timed rounds.
+System Architecture
+The lottery system consists of three main components:
+Core Lottery Engine
+A robust smart contract system handling participant management, token processing, and winner selection.
+Key Features:
 
-This repository contains a Solidity smart contract (`TokenLottery.sol`) for a decentralized lottery DApp. Users can participate in the lottery by submitting tokens. The contract features:
+Participant authentication via whitelist
+Single-entry enforcement per round
+Time-controlled lottery phases
+Cryptographically secure winner selection
+Automated prize distribution
 
-- Whitelisted addresses for participation.
-- Rate limiting (one-time participation per user).
-- A time-bound lottery period.
-- Automated winner selection and reward distribution.
+Token Integration
+Built on standard ERC20 infrastructure:
 
-## Contract Overview
+Main Lottery Contract (LotteryEngine.sol)
+Token Interface (IERC20.sol)
+Test Token Implementation (Token.sol)
 
-The `TokenLottery` contract allows users to enter a lottery and includes the following functionalities:
+Security Framework
 
-- **Whitelisted Addresses:** Only users on the whitelist can participate.
-- **Rate Limiting:** Users can participate only once in a lottery round.
-- **Time-Bound Lottery:** A fixed period for accepting entries before selecting a winner.
-- **Automated Winner Selection and Reward Calculation:** After the lottery period, a random winner is selected, and the reward is automatically transferred to the winner.
+Participant validation
+Rate limiting mechanisms
+Temporal controls
+Safe token handling
 
-## Contract Details
+Development Setup
+Environment Requirements
+Set up your development environment with:
+bashCopy# Core dependencies
+npm init
+npm install --save-dev hardhat
 
-- **`TokenLottery.sol`:** Main contract for the lottery system.
-- **`IERC20.sol`:** Interface for the ERC20 token used in the lottery.
-- **`Token.sol`:** Sample ERC20 token used in the lottery.
+# Contract dependencies
+npm install @openzeppelin/contracts
+Build and Deploy
 
-### Dependencies:
+Compile the contracts:
 
-- `@openzeppelin/contracts`: For ERC20 interface and other utilities.
+bashCopynpx hardhat compile
 
-## Getting Started
+Deploy to your chosen network:
 
-### Prerequisites
+bashCopynpx hardhat run deployment/lottery.js --network <your-network>
+Example deployment script:
+javascriptCopyasync function deployLottery() {
+  const LotterySystem = await ethers.getContractFactory("LotteryEngine");
+  const lottery = await LotterySystem.deploy(
+    tokenAddress,
+    roundDuration
+  );
+  
+  await lottery.deployed();
+  console.log(`Lottery deployed at: ${lottery.address}`);
+}
+Contract Interface
+Administrative Functions
+solidityCopyfunction addToWhitelist(address participant)
+function removeParticipant(address participant)
+function configureLotteryDuration(uint256 duration)
+Participant Functions
+solidityCopyfunction joinLottery(uint256 tokenAmount)
+function checkEntryStatus()
+function viewCurrentPrizePool()
+System Functions
+solidityCopyfunction concludeRound()
+function retrieveWinner()
+function checkRoundStatus()
+Event System
+The contract emits the following events:
 
-1. **Node.js** and **npm** (or **yarn**)
-2. **Hardhat**:
-   ```bash
-   npm install --save-dev hardhat
-   ```
-3. **OpenZeppelin Contracts**:
-   ```bash
-   npm install @openzeppelin/contracts
-   ```
+ParticipantJoined(address participant, uint256 amount)
+RoundCompleted(address winner, uint256 prize)
+ConfigurationUpdated(uint256 newDuration)
 
-### Installation
+Safety Measures
 
-```bash
-git clone <repository_url>
-cd <repository_directory>
-npm install
-```
+Access Control
 
-### Configuration
+Role-based permissions
+Whitelist validation
+Time-locked operations
 
-In your Hardhat configuration file (`hardhat.config.js`), configure your network settings (e.g., local Hardhat network, testnet, or mainnet).
 
-### Deployment
+Token Safety
 
-1. **Compile the contracts:**
+OpenZeppelin secure transfer implementations
+Balance verification
+Overflow protection
 
-   ```bash
-   npx hardhat compile
-   ```
 
-2. **Deploy the `TokenLottery` contract:**
+Operational Security
 
-   ```bash
-   npx hardhat run scripts/deploy.js --network <network_name>
-   ```
+Rate limiting
+State validation
+Reentry protection
 
-   (Create a `deploy.js` script in the `scripts` directory.)
 
-   Example `deploy.js`:
 
-   ```javascript
-   const { ethers } = require("hardhat");
+Testing
+Execute the test suite:
+bashCopy# Standard tests
+npx hardhat test
 
-   async function main() {
-     const TokenLottery = await ethers.getContractFactory("TokenLottery");
-     const tokenLottery = await TokenLottery.deploy(
-       "<your_erc20_token_address>"
-     );
+# With coverage
+npx hardhat coverage
 
-     await tokenLottery.deployed();
-
-     console.log("TokenLottery deployed to:", tokenLottery.address);
-   }
-
-   main().catch((error) => {
-     console.error(error);
-     process.exitCode = 1;
-   });
-   ```
-
-### Interaction
-
-- Use Hardhat console or a frontend application to interact with the contract.
-
-## Contract Functions
-
-- **`constructor(address _tokenAddress, uint256 _lotteryDuration)`**: Initializes the contract with the ERC20 token address and the lottery duration in seconds.
-- **`whitelist(address _user)`**: Adds a user to the whitelist (only owner).
-- **`removeFromWhitelist(address _user)`**: Removes a user from the whitelist (only owner).
-- **`enterLottery(uint256 _amount)`**: Allows whitelisted users to enter the lottery by submitting tokens (only whitelisted users).
-- **`endLottery()`**: Ends the lottery and picks a winner. Only callable after the lottery period has passed.
-- **`getWinner()`**: Returns the address of the current winner.
-
-## Events
-
-- **`Entered(address indexed user, uint256 amount)`**: Emitted when a user enters the lottery.
-- **`WinnerSelected(address indexed winner, uint256 reward)`**: Emitted when a winner is selected and rewarded.
-
-## Security Considerations
-
-- The contract uses **OpenZeppelin**'s libraries, ensuring security best practices such as safe ERC20 token transfers.
-- Proper access control is implemented using modifiers (`onlyOwner`, `onlyWhitelisted`).
-- Reentrancy attacks are mitigated by using safe transfer functions from OpenZeppelin's `IERC20` interface.
-- It's highly recommended to conduct thorough testing and auditing before deploying to a production environment.
-
-## Disclaimer
-
-This contract is provided as-is and without any warranties. Use it at your own risk.
+# With gas reporting
+REPORT_GAS=true npx hardhat test
